@@ -1,0 +1,16 @@
+{
+  "name": "Asistente personal de voz",
+  "short_name": "Asistente",
+  "description": "Asistente de voz estilo Jarvis: habla, investiga, calcula, muestra videos, holograma y más.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#04121c",
+  "theme_color": "#04121c",
+  "lang": "es",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

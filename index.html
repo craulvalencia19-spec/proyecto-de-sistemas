@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asistente</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#04121c">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+  <div id="errorPantalla"></div>
+  <canvas id="matriz"></canvas>
+  <canvas id="orbe"></canvas>
+  <div id="capaVentanas"></div>
+  <div id="puntero"><div class="aro"></div><div class="punto"></div></div>
+  <video id="videoRastreo" autoplay muted playsinline></video>
+  <div id="version">versión 8</div>
+
+  <div id="nombre">JARVIS</div>
+  <div id="estado">En espera</div>
+  <div id="reloj">--:--:--</div>
+  <button id="btnAjustes" title="Ajustes">⚙</button>
+
+  <div id="textos">
+    <div id="tuvoz"></div>
+    <div id="respuesta">Pulsa el micrófono para empezar.</div>
+  </div>
+
+  <div id="menu">
+    <button data-vista="v-camara">📷 Cámara</button>
+    <button data-vista="v-d3">🧊 Modelo 3D</button>
+    <button data-vista="v-info">🔎 Investigación</button>
+    <button data-vista="v-casa">🏠 Casa</button>
+    <button data-vista="v-pantalla">🖥 Pantalla</button>
+    <button data-vista="v-programas">🧩 Programas</button>
+    <button data-vista="v-docs">📚 Documentos</button>
+    <button data-vista="v-comandos">💡 Comandos</button>
+    <button id="btnPresentar">🎤 Presentación</button>
+    <button data-vista="v-videos">▶ Videos</button>
+    <button id="btnFull">⛶ Pantalla completa</button>
+    <button id="btnHolo">🧍 Holograma</button>
+    <button id="btnInstalar" class="oculto">⬇ Instalar app</button>
+  </div>
+
+  <div id="barra">
+    <button id="btnMic" title="Activar micrófono">🎤</button>
+    <input id="entrada" type="text" placeholder="O escribe una orden y pulsa Enter...">
+    <button id="btnEnviar">Enviar</button>
+  </div>
+
+  <aside id="panel">
+    <button id="cerrarPanel">✕</button>
+
+    <div id="v-camara" class="vista">
+      <div id="marco">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="manos"></canvas>
+        <div id="ventana">Agárrame con los dedos</div>
+      </div>
+      <div class="fila">
+        <button id="btnCamara">Encender cámara</button>
+        <button id="btnFoto">Tomar foto</button>
+      </div>
+      <p class="ayuda">Junta el pulgar y el índice sobre el recuadro para agarrarlo y moverlo. También lo puedes arrastrar con el mouse.</p>
+    </div>
+
+    <div id="v-d3" class="vista">
+      <div id="escena"></div>
+      <p class="ayuda">Di: "crea un cubo rojo", "crea una esfera azul", "crea un cono verde", "detén el modelo" o "borra el modelo".</p>
+    </div>
+
+    <div id="v-info" class="vista">
+      <div id="info">Di: "investiga sobre los agujeros negros".</div>
+    </div>
+
+    <div id="v-pantalla" class="vista">
+      <div id="marcoPantalla">
+        <video id="videoPantalla" autoplay playsinline muted></video>
+        <div id="avisoPantalla">Aquí aparecerá tu escritorio o la ventana que compartas.</div>
+      </div>
+      <ol id="guiaPantalla" class="guia">
+        <li>Pulsa el botón <b>Compartir pantalla</b> (el que brilla).</li>
+        <li>En la ventana que aparece, entra a la pestaña <b>Pantalla completa</b> (o <b>Ventana</b>).</li>
+        <li>Haz clic sobre la imagen de tu pantalla y pulsa <b>Compartir</b>.</li>
+        <li>Para terminar di: “deja de compartir pantalla”.</li>
+      </ol>
+      <div class="fila">
+        <button id="btnPantalla">Compartir pantalla</button>
+        <button id="btnCapturaPantalla">Captura</button>
+        <button id="btnPip">Ventana flotante</button>
+      </div>
+      <p class="ayuda">Por seguridad, el navegador te deja elegir qué compartir con un clic. Puedes decir "deja de compartir pantalla" para detenerla.</p>
+    </div>
+
+    <div id="v-programas" class="vista">
+      <p class="ayuda" style="margin-top:0">Abre programas flotantes que puedes mover con el mouse o con la voz ("mueve las notas a la derecha"), y abre o cierra sitios web. Una página web no puede controlar otros programas de tu computadora.</p>
+      <div id="avisoEnlace"></div>
+      <div id="lanzador"></div>
+    </div>
+
+    <div id="v-docs" class="vista">
+      <p class="ayuda" style="margin-top:0">Carga tus documentos (txt, md, csv, json, html, pdf, docx, xlsx) y pregúntame: "busca en mis documentos fotosíntesis". También puedes arrastrar archivos aquí.</p>
+      <div class="fila">
+        <label class="btn-archivo" for="archivosDocs">📂 Elegir archivos</label>
+        <input id="archivosDocs" type="file" multiple accept=".txt,.md,.csv,.json,.html,.htm,.pdf,.docx,.xlsx,.xls,.ods" hidden>
+        <button id="btnLimpiarDocs">Borrar todos</button>
+      </div>
+      <div class="fila"><button id="btnCarpeta">📁 Conectar carpeta de mi computador</button></div>
+      <div id="estadoCarpeta" class="ayuda">Conecta una carpeta (por ejemplo Documentos) y podré abrir sus archivos por voz: “abre el archivo informe”.</div>
+      <div id="accionesOffice"></div>
+      <div id="estadoDocs" class="ayuda"></div>
+      <div id="listaDocs"></div>
+      <div class="fila">
+        <input id="buscarDocs" type="text" placeholder="Pregunta o busca algo en tus documentos...">
+        <button id="btnBuscarDocs">Buscar</button>
+      </div>
+      <div id="resultadosDocs"></div>
+    </div>
+
+    <div id="v-videos" class="vista">
+      <div id="reproductor"></div>
+      <div id="listaVideos">Di: "pon videos de gatos".</div>
+      <p class="ayuda">Si un video no se puede incrustar, elige otro de la lista.</p>
+    </div>
+
+    <div id="v-comandos" class="vista">
+      <p class="ayuda" style="margin-top:0">Toca cualquier frase para probarla, o dila con tu voz.</p>
+      <div id="listaComandos"></div>
+    </div>
+
+    <div id="v-casa" class="vista">
+      <div class="casa">
+        <div class="dispositivo" id="luzSala"><span>💡</span><p>Luz de la sala</p><b>Apagada</b></div>
+        <div class="dispositivo" id="luzCuarto"><span>💡</span><p>Luz del cuarto</p><b>Apagada</b></div>
+        <div class="dispositivo" id="ventilador"><span>🌀</span><p>Ventilador</p><b>Apagado</b></div>
+        <div class="dispositivo" id="puerta"><span>🚪</span><p>Puerta</p><b>Cerrada</b></div>
+      </div>
+      <p class="ayuda">Di: "enciende la luz de la sala", "apaga el ventilador", "abre la puerta".</p>
+    </div>
+  </aside>
+
+  <div id="modal" class="oculto">
+    <div class="caja">
+      <h2>Ajustes</h2>
+      <label>Nombre del asistente</label>
+      <input id="inNombre" type="text" maxlength="20" placeholder="Ej: Luna, Viernes, Max">
+      <label>Tu nombre</label>
+      <input id="inUsuario" type="text" maxlength="20" placeholder="Ej: Cristian">
+      <label>Institución / colegio (para la presentación)</label>
+      <input id="inInstitucion" type="text" maxlength="60" placeholder="Ej: Colegio San Martín">
+      <label>Nombre del proyecto</label>
+      <input id="inProyecto" type="text" maxlength="60" placeholder="Ej: Asistente personal de voz">
+      <label>Clave de Gemini (opcional, gratis) — respuestas precisas de todo el mundo</label>
+      <input id="inClaveIA" type="password" placeholder="Pega tu clave de aistudio.google.com/apikey" autocomplete="off">
+      <label>Color</label>
+      <input id="inColor" type="color" value="#00e5ff">
+      <label>Voz</label>
+      <select id="inVoz"></select>
+      <div class="fila">
+        <button id="btnGuardar">Guardar</button>
+        <button id="btnCerrar">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="diapo" class="oculto">
+    <div id="diapoNum"></div>
+    <h1 id="diapoTitulo"></h1>
+    <ul id="diapoPuntos"></ul>
+    <p id="diapoTexto"></p>
+    <div id="diapoCtl">
+      <button id="dpAnt">⏮ Anterior</button>
+      <button id="dpPausa">⏸ Pausa</button>
+      <button id="dpSig">Siguiente ⏭</button>
+      <button id="dpSalir">✕ Salir</button>
+    </div>
+  </div>
+
+  <script>window.__PC_TOKEN = "__PC_TOKEN__";</script>
+  <script src="script.js"></script>
+</body>
+</html>
